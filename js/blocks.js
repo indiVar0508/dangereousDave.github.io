@@ -52,8 +52,8 @@ class Reward extends Blocks{
 
 	constructor(){
 		super();
-		this.key = Math.floor(Math.random() * 9);
-		this.trophy = Math.floor(Math.random() * 9);
+		this.key = Math.floor(Math.random() * 8);
+		this.trophy = Math.floor(Math.random() * 8);
 		if (this.key == this.trophy){
 			this.trophy += 1;
 		}
