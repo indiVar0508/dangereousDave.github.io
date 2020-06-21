@@ -1,6 +1,8 @@
 class Player{
 	
 	constructor(start_x, start_y, jump, step, height, width){
+		this.start_x = start_x
+		this.start_y = start_y
 		this.x = start_x;
 		this.y = start_y;
 		this.width = width;
@@ -45,9 +47,32 @@ class Player{
 	}
 
 	move() {
+		this.moveRight = keyRight;
+		this.moveLeft = keyLeft;
+		this.moveUp = keyUp;
 		this.Up();
 		this.Right();
 		this.Left();
 	}
+
+}
+
+class GeneticAgent extends Player{
+
+	constructor(start_x, start_y, jump, step, height, width, n_steps, n_actions=3){
+		super(start_x, start_y, jump, step, height, width);
+		this.gene = new Array();
+		for(var i=0;i < n_steps; i++){
+			this.gene.push(Math.floor(Math.random() * n_actions));
+		}
+		this.current_move = 0;
+		this.fitness = 0.0;
+	}
+
+	getNextMove(){
+		if (this.current_move < this.gene.length){return this.gene[this.current_move++];}
+		return -1;
+	}
+
 
 }
