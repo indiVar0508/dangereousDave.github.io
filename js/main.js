@@ -132,16 +132,26 @@ playerBlockInteraction = function() {
 
 }
 
+
+restartGame = function(){
+	player = new Player(start_x=50, start_y=canvas.height - 70, 
+					jump=30, 
+					step=5, height=50, width=25);
+	blocks = new Blocks(canvas.width, canvas.height)
+	reward = new Reward();
+	gravity = 10;
+	score = 0;
+	gameOver = false;
+}
+
 won = function() {
 	if (check(blocks.winning_block, player)){
 		if (player.hasKey){
 			alert("Chicken Dinner!");
 			player.moveLeft=false;
 			player.x = blocks.winning_block[0] + blocks.winning_block[2] + 5;
-			if (!gameOver) {
-				score += 10
-				gameOver = true;
-			}
+			score += 10
+			restartGame();	
 		}
 		else{
 			player.moveLeft=false;
