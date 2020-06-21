@@ -123,7 +123,7 @@ class Game{
 				else{
 					this.player.moveLeft=false;
 					this.player.x = this.blocks.winning_block[0] + this.blocks.winning_block[2] + 5;
-					score -= 1
+					this.score -= 1
 				}
 			}
 		}
