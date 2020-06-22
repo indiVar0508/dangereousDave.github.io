@@ -15,11 +15,13 @@ class Player{
 		this.moveUp = false;
 		this.jumping = false;
 		this.hasKey = false;
+		this.dead = false;
 
 	}
 
 	show(){
-		drawRect(this.x, this.y, this.width, this.height,"#f0e609");
+		if (!this.dead){
+			drawRect(this.x, this.y, this.width, this.height,"#f0e609");}
 	}
 
 	Up() {
@@ -47,6 +49,7 @@ class Player{
 	}
 
 	move() {
+		if (this.dead){return;}
 		this.moveRight = keyRight;
 		this.moveLeft = keyLeft;
 		this.moveUp = keyUp;
@@ -71,7 +74,36 @@ class GeneticAgent extends Player{
 
 	getNextMove(){
 		if (this.current_move < this.gene.length){return this.gene[this.current_move++];}
+		this.dead=true;
 		return -1;
+	}
+
+	move() {
+		if (this.dead){return;}
+
+		let next_move = this.getNextMove()
+		if (next_move == 0){
+			this.moveLeft = true;
+			this.moveRight = false;
+			this.moveUp = false;
+		} else if(next_move == 1){
+			this.moveRight = true;
+			this.moveLeft = false;
+			this.moveUp = false;
+		} else if(next_move == 2){
+			this.moveUp = true;
+			this.moveRight = false;
+			this.moveLeft = false;
+		} else{
+			this.moveUp = false;
+			this.moveRight = false;
+			this.moveLeft = false;
+		}
+
+
+		this.Up();
+		this.Right();
+		this.Left();
 	}
 
 

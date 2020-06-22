@@ -22,41 +22,41 @@ class Game{
 		}
 	
 	
-		pullPlayer = function() {
+		pullPlayer = function(player) {
 
-			this.player.y += this.gravity
+			player.y += this.gravity
 			
 			// Bottom Wall Interaction
-			if (this.player.y + this.player.height > canvas.height){
-				this.player.jumping = false;
-				this.player.jump = this.player.jump_step;
+			if (player.y + player.height > canvas.height){
+				player.jumping = false;
+				player.jump = player.jump_step;
 			}
 
 			for (var i =0; i<this.blocks.level_1_blocks.length; i++){
-				this.playerToFallOnBlock(this.blocks.level_1_blocks[i], this.player);
+				this.playerToFallOnBlock(this.blocks.level_1_blocks[i], player);
 			}
 
 			for (var i =0; i<this.blocks.level_2_blocks.length; i++){
-				this.playerToFallOnBlock(this.blocks.level_2_blocks[i], this.player);
+				this.playerToFallOnBlock(this.blocks.level_2_blocks[i], player);
 			}
 
 		}
 	
-		playerInBoundary = function() {
+		playerInBoundary = function(player) {
 	
-			if (this.player.y + this.player.height > canvas.height){
-				this.player.y = canvas.height - this.player.height;
-				this.player.jumping = false;
+			if (player.y + player.height > canvas.height){
+				player.y = canvas.height - player.height;
+				player.jumping = false;
 			}
-			if (this.player.y < 0){
-				this.player.y = 0;
-				this.player.jumping = false;
+			if (player.y < 0){
+				player.y = 0;
+				player.jumping = false;
 			}
-			if (this.player.x + this.player.width > canvas.width){
-				this.player.x = canvas.width - this.player.width;
+			if (player.x + player.width > canvas.width){
+				player.x = canvas.width - player.width;
 			}
-			if (this.player.x < 0){
-				this.player.x = 0;
+			if (player.x < 0){
+				player.x = 0;
 			}
 		}
 	
@@ -68,21 +68,21 @@ class Game{
 			
 		}
 	
-		checkInteraction = function(blockArray, reward=false){
+		checkInteraction = function(blockArray, player, reward=false){
 			for(var i=0; i<blockArray.length; i++){
 				var block = blockArray[i];
-				if (this.check(block, this.player) && reward){
+				if (this.check(block, player) && reward){
 					return i;
 				}
-				else if (this.check(block, this.player)){
-					if (this.player.moveLeft && !this.player.jumping){
-						this.player.x = block[0] + block[2];
+				else if (this.check(block, player)){
+					if (player.moveLeft && !player.jumping){
+						player.x = block[0] + block[2];
 					}
-					else if (this.player.moveRight && !this.player.jumping){
-						this.player.x = block[0] - this.player.width;
+					else if (player.moveRight && !player.jumping){
+						player.x = block[0] - player.width;
 					}
-					else if (this.player.jumping){
-						this.player.y = block[1] + block[3]
+					else if (player.jumping){
+						player.y = block[1] + block[3]
 					}
 					return
 				}
@@ -90,11 +90,11 @@ class Game{
 		}
 	
 	
-		playerBlockInteraction = function() {
+		playerBlockInteraction = function(player) {
 			
-			this.checkInteraction(this.blocks.level_1_blocks)
+			this.checkInteraction(this.blocks.level_1_blocks, player)
 	
-			this.checkInteraction(this.blocks.level_2_blocks)
+			this.checkInteraction(this.blocks.level_2_blocks, player)
 	
 		}
 	
@@ -110,29 +110,29 @@ class Game{
 			keyLeft = keyRight = keyUp = false;
 		}
 	
-		won = function() {
-			if (this.check(this.blocks.winning_block, this.player)){
-				if (this.player.hasKey){
+		won = function(player) {
+			if (this.check(this.blocks.winning_block, player)){
+				if (player.hasKey){
 					alert("Chicken Dinner!");
-					this.player.moveLeft=false;
-					this.player.x = this.blocks.winning_block[0] + this.blocks.winning_block[2] + 5;
+					player.moveLeft=false;
+					player.x = this.blocks.winning_block[0] + this.blocks.winning_block[2] + 5;
 					this.score += 10
 					this.gameOver = true;
 					this.restartGame();	
 				}
 				else{
-					this.player.moveLeft=false;
-					this.player.x = this.blocks.winning_block[0] + this.blocks.winning_block[2] + 5;
+					player.moveLeft=false;
+					player.x = this.blocks.winning_block[0] + this.blocks.winning_block[2] + 5;
 					this.score -= 1
 				}
 			}
 		}
 	
-		gotReward = function() {
-			let idx = this.checkInteraction(this.reward.reward, true);
+		gotReward = function(player) {
+			let idx = this.checkInteraction(this.reward.reward, player, true);
 			if (idx != undefined){
 				if (this.reward.points[idx] == 5){
-					this.player.hasKey = true;
+					player.hasKey = true;
 				}
 				this.score += this.reward.points[idx];
 				this.reward.points[idx] = 0;
@@ -157,14 +157,74 @@ class Game{
 	
 			// Gravity on Player
 			// console.log(this);
-			this.pullPlayer();
-			this.gotReward();
+			this.pullPlayer(this.player);
+			this.gotReward(this.player);
 			
 			// player in boundary
-			this.playerInBoundary();
-			this.playerBlockInteraction();
-			this.won();
+			this.playerInBoundary(this.player);
+			this.playerBlockInteraction(this.player);
+			this.won(this.player);
 			this.showMessage();
 			// Todo: RL/Genetic	
 		}	
+}
+
+class geneticGame extends Game{
+
+	constructor(player, blocks, reward, gravity, population_size){
+		super(player, blocks, reward, gravity);
+		this.population = new Population(population_size, player);
+	}
+
+	pullPlayers = function(player, n) {
+
+			player.y += this.gravity
+			
+			// Bottom Wall Interaction
+			if (player.y + player.height > canvas.height){
+				player.jumping = false;
+				player.jump = player.jump_step;
+			}
+
+			for (var i =0; i<this.blocks.level_1_blocks.length; i++){
+				this.playerToFallOnBlock(this.blocks.level_1_blocks[i], player);
+			}
+
+			for (var i =0; i<this.blocks.level_2_blocks.length; i++){
+				this.playerToFallOnBlock(this.blocks.level_2_blocks[i], player);
+			}
+
+		}
+
+
+	main = function() {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		context.fillStyle="#303030";
+		context.fillRect(0, 0, canvas.width, canvas.height);
+
+		this.population.renderPopulation();
+		this.blocks.show();
+		this.reward.show();
+
+		this.population.movePopulation();
+
+		// Gravity on Player
+		for(var i=0; i<this.population.species.length;i++){this.pullPlayer(this.population.species[i]);}
+		// this.gotReward();
+		for(var i=0; i<this.population.species.length;i++){this.gotReward(this.population.species[i]);}
+		// this.population.species.forEach(function(player){this.gotReward(player);});
+		
+		// // // player in boundary
+		// this.playerInBoundary();
+		for(var i=0; i<this.population.species.length;i++){this.playerInBoundary(this.population.species[i]);}
+		// this.population.species.forEach(function(player){this.gotReward(player);});
+		// // this.playerBlockInteraction();
+		for(var i=0; i<this.population.species.length;i++){this.playerBlockInteraction(this.population.species[i]);}
+		// this.population.species.forEach(function(player){this.gotReward(player);});
+		// this.won();
+		for(var i=0; i<this.population.species.length;i++){this.won(this.population.species[i]);}
+		// this.showMessage();
+		// Todo: Make population	
+		}	
+
 }
