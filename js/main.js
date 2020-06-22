@@ -17,8 +17,8 @@ AICharcater = new GeneticAgent(start_x=50, start_y=canvas.height - 70,
 					jump=30, 
 					step=5, height=50, width=25, 5000);
 
-// dave = new Game(Character, Bricks, points, 10);
-dave = new geneticGame(AICharcater, Bricks, points, 10, 50)
+dave = new Game(Character, Bricks, points, 10);
+// dave = new geneticGame(AICharcater, Bricks, points, 10, 50)
 startGame=function(){
 	dave.main();
 	requestAnimationFrame(startGame);
