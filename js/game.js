@@ -100,9 +100,9 @@ class Game{
 	
 	
 		restartGame = function(){
-			this.player = new Player(start_x=this.player.start_x, start_y=this.player.start_y, 
-							jump=this.player.jump_step, 
-							step=this.player.step, height=this.player.height, width=this.player.width);
+			this.player = new Player(start_x=50, start_y=canvas.height - 70, 
+					jump=30, 
+					step=5, height=50, width=25);
 			this.blocks = new Blocks(canvas.width, canvas.height)
 			this.reward = new Reward();
 			this.score = 0;
@@ -113,12 +113,12 @@ class Game{
 		won = function(player) {
 			if (this.check(this.blocks.winning_block, player)){
 				if (player.hasKey){
-					alert("Chicken Dinner!");
+					alert("Noice, GG WP");
 					player.moveLeft=false;
 					player.x = this.blocks.winning_block[0] + this.blocks.winning_block[2] + 5;
 					this.score += 10
 					this.gameOver = true;
-					this.restartGame();	
+					this.restartGame()
 				}
 				else{
 					player.moveLeft=false;
@@ -133,16 +133,23 @@ class Game{
 			if (idx != undefined){
 				if (this.reward.points[idx] == 5){
 					player.hasKey = true;
+					player.color = "#AFAFAF"
+				}
+				if (this.reward.points[idx] == 3){
+					player.height += 5;
+					player.width += 3;
+					player.step += 2;
+					player.jump_step += 1;
 				}
 				this.score += this.reward.points[idx];
 				this.reward.points[idx] = 0;
 			}
 		}
 	
-		showMessage = function() {
+		showMessage = function(msg) {
 			context.fillStyle = "white";
 			context.font = "30px Arial";
-			context.fillText("Score : " + this.score, 5, 25);
+			context.fillText(msg, 5, 25);
 		}
 	
 		main = function() {
@@ -164,67 +171,8 @@ class Game{
 			this.playerInBoundary(this.player);
 			this.playerBlockInteraction(this.player);
 			this.won(this.player);
-			this.showMessage();
+			this.showMessage("Score : " + this.score);
 			// Todo: RL/Genetic	
 		}	
 }
 
-class geneticGame extends Game{
-
-	constructor(player, blocks, reward, gravity, population_size){
-		super(player, blocks, reward, gravity);
-		this.population = new Population(population_size, player);
-	}
-
-	pullPlayers = function(player, n) {
-
-			player.y += this.gravity
-			
-			// Bottom Wall Interaction
-			if (player.y + player.height > canvas.height){
-				player.jumping = false;
-				player.jump = player.jump_step;
-			}
-
-			for (var i =0; i<this.blocks.level_1_blocks.length; i++){
-				this.playerToFallOnBlock(this.blocks.level_1_blocks[i], player);
-			}
-
-			for (var i =0; i<this.blocks.level_2_blocks.length; i++){
-				this.playerToFallOnBlock(this.blocks.level_2_blocks[i], player);
-			}
-
-		}
-
-
-	main = function() {
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		context.fillStyle="#303030";
-		context.fillRect(0, 0, canvas.width, canvas.height);
-
-		this.population.renderPopulation();
-		this.blocks.show();
-		this.reward.show();
-
-		this.population.movePopulation();
-
-		// Gravity on Player
-		for(var i=0; i<this.population.species.length;i++){this.pullPlayer(this.population.species[i]);}
-		// this.gotReward();
-		for(var i=0; i<this.population.species.length;i++){this.gotReward(this.population.species[i]);}
-		// this.population.species.forEach(function(player){this.gotReward(player);});
-		
-		// // // player in boundary
-		// this.playerInBoundary();
-		for(var i=0; i<this.population.species.length;i++){this.playerInBoundary(this.population.species[i]);}
-		// this.population.species.forEach(function(player){this.gotReward(player);});
-		// // this.playerBlockInteraction();
-		for(var i=0; i<this.population.species.length;i++){this.playerBlockInteraction(this.population.species[i]);}
-		// this.population.species.forEach(function(player){this.gotReward(player);});
-		// this.won();
-		for(var i=0; i<this.population.species.length;i++){this.won(this.population.species[i]);}
-		// this.showMessage();
-		// Todo: Make population	
-		}	
-
-}

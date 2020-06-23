@@ -4,14 +4,26 @@
 	<title>Dave</title>
 </head>
 <body>
-	<b> WORK IN PROGRESS.... <i>You can use arrow keys to play the game,for now the player jumps moves left & right., </i> </b>
+	<b> WORK IN PROGRESS.... <i>You can use arrow keys to play the game,for now the player jumps moves left & right., or buttons to move the block </i> </b>
 	<canvas id="my_canvas" width="1250" height="500"></canvas>
+	
+	<!--<button onclick="handleGame();">Evolve To Play</button> -->
+	<center>
+		<button onmousedown="setKeyVals(true, false, false);" onmouseup="setKeyVals(false, false, false);">Move Left</button>
+		<button onmousedown="setKeyVals(false, true, false);" onmouseup="setKeyVals(false, false, false);">Move UP</button>
+		<button onmousedown="setKeyVals(false, false, true);" onmouseup="setKeyVals(false, false, false);">Move Right</button>
+	</center>
+
+
 	<script type="text/javascript" src="js/player.js"></script>
+	<script type="text/javascript" src="js/geneticplayer.js"></script>
 	<script type="text/javascript" src="js/blocks.js"></script>
 	<script type="text/javascript" src="js/utility.js"></script>
 	<script type="text/javascript" src="js/population.js"></script>
-	<script type="text/javascript" src="js/game.js"></script>	
+	<script type="text/javascript" src="js/game.js"></script>
+	<script type="text/javascript" src="js/geneticgame.js"></script>	
 	<script type="text/javascript" src="js/main.js"></script>
+
 
 </body>
 </html>
