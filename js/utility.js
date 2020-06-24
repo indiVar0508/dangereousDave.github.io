@@ -32,14 +32,14 @@ handleGame = function(){
 // Adding Listeners
 keyDownHandler = function(event) {
 	if (event.key == "Right" || event.key == "ArrowRight"){setKeyVals(left=false, up=false, right=true);}
-	if (event.key == "up" || event.key == "ArrowUp"){setKeyVals(left=false, up=true, right=false);}
-	if (event.key == "left" || event.key == "ArrowLeft"){setKeyVals(left=true, up=false, right=false);}
+	else if (event.key == "up" || event.key == "ArrowUp"){setKeyVals(left=false, up=true, right=false);}
+	else if (event.key == "left" || event.key == "ArrowLeft"){setKeyVals(left=true, up=false, right=false);}
 }
 
 keyUpHandler = function(event) {
 	if (event.key == "Right" || event.key == "ArrowRight"){setKeyVals(left=false, up=false, right=false);}
-	if (event.key == "left" || event.key == "ArrowLeft"){setKeyVals(left=false, up=false, right=false);}
-	if (event.key == "up" || event.key == "ArrowUp"){setKeyVals(left=false, up=false, right=false);}
+	else if (event.key == "left" || event.key == "ArrowLeft"){setKeyVals(left=false, up=false, right=false);}
+	else if (event.key == "up" || event.key == "ArrowUp"){setKeyVals(left=false, up=false, right=false);}
 }
 				
 document.addEventListener("keydown", this.keyDownHandler, false);
